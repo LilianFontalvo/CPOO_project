@@ -78,7 +78,7 @@ public class Simulation {
      * @return La puissance électrique consommée à la minute et au jour donnés de
      *         points[k]
      */
-    private double getPowerConsMin(int c, int p, int min, int day) {
+    public double getPowerConsMin(int c, int p, int min, int day) {
         return clusters[c].getPoints()[p].getModel().getPowerConsMin(min, day);
     }
 
@@ -91,7 +91,7 @@ public class Simulation {
      * @return La puissance électrique consommée à la minute et au jour donnés de
      *         clusters[c]
      */
-    private double getPowerConsMin(int c, int min, int day) {
+    public double getPowerConsMin(int c, int min, int day) {
         double cons = 0;
         for (Point point : clusters[c].getPoints()) {
             cons += point.getModel().getPowerConsMin(min, day);
@@ -109,7 +109,7 @@ public class Simulation {
      * @return La puissance électrique produite à la minute et au jour donnés de
      *         points[k]
      */
-    private double getPowerProdMin(int c, int p, int min, int day) {
+    public double getPowerProdMin(int c, int p, int min, int day) {
         return clusters[c].getPoints()[p].getModel().getPowerProdMin(min, day);
     }
 
@@ -122,7 +122,7 @@ public class Simulation {
      * @return La puissance électrique produite à la minute et au jour donnés de
      *         clusters[c]
      */
-    private double getPowerProdMin(int c, int min, int day) {
+    public double getPowerProdMin(int c, int min, int day) {
         double prod = 0;
         for (Point point : clusters[c].getPoints()) {
             prod += point.getModel().getPowerProdMin(min, day);
@@ -139,7 +139,7 @@ public class Simulation {
      * 
      * @see getCumulMin
      */
-    private double getConsDay(int c, int p, int day) {
+    public double getConsDay(int c, int p, int day) {
         return clusters[c].getPoints()[p].getModel().getConsDay(day);
     }
 
@@ -153,7 +153,7 @@ public class Simulation {
      * @return La puissance électrique consommée à la minute et au jour donnés de
      *         points[k]
      */
-    private double getConsDay(int c, int day) {
+    public double getConsDay(int c, int day) {
         double cons = 0;
         for (Point point : clusters[c].getPoints()) {
             cons += point.getModel().getConsDay(day);
@@ -170,7 +170,7 @@ public class Simulation {
      * 
      * @see getCumulMin
      */
-    private double getProdDay(int c, int p, int day) {
+    public double getProdDay(int c, int p, int day) {
         return clusters[c].getPoints()[p].getModel().getProdDay(day);
     }
 
@@ -183,7 +183,7 @@ public class Simulation {
      * @return La puissance électrique produite à la minute et au jour donnés de
      *         clusters[k]
      */
-    private double getProdDay(int c, int day) {
+    public double getProdDay(int c, int day) {
         double prod = 0;
         for (Point point : clusters[c].getPoints()) {
             prod += point.getModel().getProdDay(day);
