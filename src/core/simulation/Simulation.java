@@ -22,10 +22,13 @@ public class Simulation {
      */
     private Cluster[] clusters;
 
+    private int nbClusters;
+
     /**
      * Nombre de Point dans la liste de Points "points".
      */
     private int[] nbPoints;
+
 
     /**
      * Constructeur de simulation à partir d'une liste de points. Initialise
@@ -35,14 +38,19 @@ public class Simulation {
      */
     public Simulation(Cluster[] clusters) {
         this.clusters = clusters;
+        this.nbClusters = 0;
+        for (Cluster cluster : clusters) {
+            this.nbClusters++;
+        }
+        this.nbPoints = new int[nbClusters];
         int i = 0;
         for (Cluster cluster : clusters) {
-            this.nbPoints[i] = 0;
-            Point[] points = cluster.getPoints();
-            for (Point point : points) {
-                point.getName(); // ne sert à rien si ce n'est à retirer le warning de non utilisation de "point"
-                this.nbPoints[i]++;
+            int j = 0;
+            for (Point point : cluster.getPoints()) {
+                point.getName();
+                j++;
             }
+            nbPoints[i] = j;
             i++;
         }
     }
@@ -75,6 +83,23 @@ public class Simulation {
     }
 
     /**
+     * Permet de recevoir la puissance électrique consommée d'un certain cluster
+     * 
+     * @param c   Entier renvoyant au kième élément de la liste "clusters"
+     * @param min Entier représentant une minutes de la journée (entre 0 et 1439)
+     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * @return La puissance électrique consommée à la minute et au jour donnés de
+     *         clusters[c]
+     */
+    private double getPowerConsMin(int c, int min, int day) {
+        double cons = 0;
+        for (Point point : clusters[c].getPoints()) {
+            cons += point.getModel().getPowerConsMin(min, day);
+        }
+        return cons;
+    }
+
+    /**
      * Permet de recevoir la puissance électrique produite d'un certain point
      * d'intérêt
      * 
@@ -86,6 +111,23 @@ public class Simulation {
      */
     private double getPowerProdMin(int c, int p, int min, int day) {
         return clusters[c].getPoints()[p].getModel().getPowerProdMin(min, day);
+    }
+
+    /**
+     * Permet de recevoir la puissance électrique produite d'un certain cluster
+     * 
+     * @param c   Entier renvoyant au kième élément de la liste "clusters"
+     * @param min Entier représentant une minutes de la journée (entre 0 et 1439)
+     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * @return La puissance électrique produite à la minute et au jour donnés de
+     *         clusters[c]
+     */
+    private double getPowerProdMin(int c, int min, int day) {
+        double prod = 0;
+        for (Point point : clusters[c].getPoints()) {
+            prod += point.getModel().getPowerProdMin(min, day);
+        }
+        return prod;
     }
 
     /**
@@ -102,6 +144,24 @@ public class Simulation {
     }
 
     /**
+     * Permet de recevoir la puissance électrique consommée d'un certain point
+     * d'intérêt
+     * 
+     * @param c   Entier renvoyant au kième élément de la liste "points"
+     * @param min Entier représentant une minutes de la journée (entre 0 et 1439)
+     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * @return La puissance électrique consommée à la minute et au jour donnés de
+     *         points[k]
+     */
+    private double getConsDay(int c, int day) {
+        double cons = 0;
+        for (Point point : clusters[c].getPoints()) {
+            cons += point.getModel().getConsDay(day);
+        }
+        return cons;
+    }
+
+    /**
      * Calcule l'enrgie totale produite dans la journée
      * 
      * @param k   Entier renvoyant au kième élément de la liste "points"
@@ -112,6 +172,23 @@ public class Simulation {
      */
     private double getProdDay(int c, int p, int day) {
         return clusters[c].getPoints()[p].getModel().getProdDay(day);
+    }
+
+    /**
+     * Permet de recevoir la puissance électrique produite d'un certain cluster
+     * 
+     * @param c   Entier renvoyant au kième élément de la liste "clusters"
+     * @param min Entier représentant une minutes de la journée (entre 0 et 1439)
+     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * @return La puissance électrique produite à la minute et au jour donnés de
+     *         clusters[k]
+     */
+    private double getProdDay(int c, int day) {
+        double prod = 0;
+        for (Point point : clusters[c].getPoints()) {
+            prod += point.getModel().getProdDay(day);
+        }
+        return prod;
     }
 
     /**
@@ -133,7 +210,7 @@ public class Simulation {
         for (int i = 0; i < 1440; i++) {
             powerCons = 0;
             powerProd = 0;
-            for (int k = 0; k < nbPoints; k++) { 
+            for (int k = 0; k < nbClusters; k++) { 
                 powerCons += getPowerConsMin(k, i, day);
                 powerProd += getPowerProdMin(k, i, day);
             }
@@ -171,7 +248,7 @@ public class Simulation {
         for (int i = 0; i < 365; i++) {
             dailyCons = 0;
             dailyProd = 0;
-            for (int k = 0; k < nbPoints; k++) {
+            for (int k = 0; k < nbClusters; k++) {
                 dailyCons += getConsDay(k, i); // en Wh, or on veut des W, d'où le /24
                 dailyProd += getProdDay(k, i); // en Wh, or on veut des W, d'où le /24
             }
