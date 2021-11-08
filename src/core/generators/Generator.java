@@ -16,5 +16,5 @@ public interface Generator {
      * 
      * @return Une liste de points d'intérêt
      */
-    public Cluster[] getPoints();
+    public Cluster[] getClusters();
 }

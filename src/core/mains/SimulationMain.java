@@ -9,7 +9,7 @@ public class SimulationMain {
 
         // For only one element
         Generator scenario0 = new Generator0(new NuclearPlant());
-        Simulation sim0 = new Simulation(scenario0.getPoints());
+        Simulation sim0 = new Simulation(scenario0.getClusters());
         sim0.simOneDay(241, false); // jour 241, le 28 août, un jour comme un autre (jour 0 = 1er janvier)
         sim0.simOneYear(false);
 
@@ -17,14 +17,14 @@ public class SimulationMain {
         Model[] listModel = { new House(), new Factory(), new SolarPlant(), new NuclearPlant() };
         int[] listNb = { 100, 1, 4, 1 };
         Generator scenario1 = new Generator1(listModel, listNb);
-        Simulation sim1 = new Simulation(scenario1.getPoints());
+        Simulation sim1 = new Simulation(scenario1.getClusters());
         sim1.simOneDay(241, false);
         sim1.simOneYear(false);
 
         // For a small randomly generated town
         Generator scenario2 = new RandomSmallTown();
-        Point[] listPoint = scenario2.getPoints();
-        Simulation sim2 = new Simulation(listPoint);
+        Cluster[] listClusters = scenario2.getClusters();
+        Simulation sim2 = new Simulation(listClusters);
         sim2.simOneDay(241, true);
         sim2.simOneYear(true);
     }

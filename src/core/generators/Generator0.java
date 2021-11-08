@@ -28,7 +28,7 @@ public class Generator0 implements Generator {
      * 
      * @return Une liste contenant un unique point d'intérêt
      */
-    public Cluster[] getPoints() {
+    public Cluster[] getClusters() {
         Point[] points = { new Point(model.toString() + "_0", model) };
         Cluster[] cluster = { new Cluster(points) };
         return cluster;

@@ -50,7 +50,7 @@ public class Generator1 implements Generator {
      * 
      * @return Une liste de points d'intérêt
      */
-    public Cluster[] getPoints() {
+    public Cluster[] getClusters() {
         Point[] points = new Point[getNb()];
         Model model;
         int i = 0;
