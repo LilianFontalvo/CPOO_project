@@ -1,6 +1,7 @@
 package core.generators;
 
 import core.models.Model;
+import core.simulation.Cluster;
 import core.simulation.Point;
 
 
@@ -49,7 +50,7 @@ public class Generator1 implements Generator {
      * 
      * @return Une liste de points d'intérêt
      */
-    public Point[] getPoints() {
+    public Cluster[] getPoints() {
         Point[] points = new Point[getNb()];
         Model model;
         int i = 0;
@@ -62,6 +63,7 @@ public class Generator1 implements Generator {
             }
             k++;
         }
-        return points;
+        Cluster[] cluster = { new Cluster(points) };
+        return cluster;
     }
 }

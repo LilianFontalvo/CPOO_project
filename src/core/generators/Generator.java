@@ -1,6 +1,6 @@
 package core.generators;
 
-import core.simulation.Point;
+import core.simulation.Cluster;
 
 /**
  * Generator est une interface regroupant toute classe permettant de générer une liste de points d'intérêt.
@@ -16,5 +16,5 @@ public interface Generator {
      * 
      * @return Une liste de points d'intérêt
      */
-    public Point[] getPoints();
+    public Cluster[] getPoints();
 }

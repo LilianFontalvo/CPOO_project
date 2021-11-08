@@ -1,6 +1,7 @@
 package core.generators;
 
 import core.models.Model;
+import core.simulation.Cluster;
 import core.simulation.Point;
 
 /**
@@ -27,8 +28,9 @@ public class Generator0 implements Generator {
      * 
      * @return Une liste contenant un unique point d'intérêt
      */
-    public Point[] getPoints() {
+    public Cluster[] getPoints() {
         Point[] points = { new Point(model.toString() + "_0", model) };
-        return points;
+        Cluster[] cluster = { new Cluster(points) };
+        return cluster;
     }
 }
