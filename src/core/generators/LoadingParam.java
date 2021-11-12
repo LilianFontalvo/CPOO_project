@@ -15,7 +15,7 @@ public class LoadingParam {
     static private String consumersFile = "src/parameters/consumers.csv";
     static private String producersFile = "src/parameters/producers.csv";
 
-    static public Cluster[] read() throws IOException {
+    static public Cluster[] readClusters() throws IOException {
 
         FileReader in = new FileReader(clustersFile);
         BufferedReader binClusters = new BufferedReader(in);
@@ -23,12 +23,13 @@ public class LoadingParam {
         while (binClusters.ready()) {
             String line = binClusters.readLine();
             String[] tokens = line.split(";");
-            
+
             // double name = Double.parseDouble(tokens[0].trim());
             // double age = Double.parseDouble(tokens[1].trim());
+            // Object[] array = arrayList.toArray()
         }
         binClusters.close();
-        return null;
+        return (Cluster[]) clusters.toArray();
     }
     
 }
