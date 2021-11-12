@@ -2,7 +2,7 @@ package core.generators;
 
 import core.models.Model;
 import core.simulation.Cluster;
-import core.simulation.Point;
+import core.simulation.*;
 
 
 /**
@@ -58,12 +58,12 @@ public class Generator1 implements Generator {
         for (int nb : listNb) {
             for (int j = 0; j < nb; j++) {
                 model = listModel[k];
-                points[i] = new Point(model.toString() + "_" + j, model);
+                points[i] = new PointSingulier(model.toString() + "_" + j, model);
                 i++;
             }
             k++;
         }
-        Cluster[] cluster = { new Cluster(points) };
+        Cluster[] cluster = { new Cluster(points, 0, 0) };
         return cluster;
     }
 }

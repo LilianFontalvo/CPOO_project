@@ -1,7 +1,5 @@
 package core.simulation;
 
-import core.models.Model;
-
 /**
  * Point est une classe réprésentant un point d'intérêt dans la simulation.
  * Chaque point doit être différent mais peuvent partager un même modèle. Un
@@ -13,40 +11,28 @@ import core.models.Model;
  * @version 1.0
  */
 
-public class Point {
+public abstract class Point {
 
-    /**
-     * Le nom du point d'intérêt
-     */
-    private String name;
-    /**
-     * Le modèle de consommation du point d'intérêt
-     * 
-     * @see Model
-     */
-    private Model model;
+    protected String name;
+    protected boolean complexe;
 
-    public Point(String name, Model model) {
+    public Point(String name, boolean complexe){
         this.name = name;
-        this.model = model;
+        this.complexe = complexe;
     }
 
-    /**
-     * Renvoie le nom du point d'intérêt
-     * 
-     * @return Le nom du Point (String)
-     */
+    public abstract double getPowerConsMin(int min, int day);
+    public abstract double getPowerProdMin(int min, int day);
+    public abstract double getConsDay(int day);
+    public abstract double getProdDay(int day);
+
+
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    /**
-     * Renvoie le modèle que suit le point d'intérêt
-     * 
-     * @return Le modèle du Point
-     */
-    public Model getModel() {
-        return model;
+    public boolean isComplexe() {
+        return this.complexe;
     }
 
 }

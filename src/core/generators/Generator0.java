@@ -1,8 +1,7 @@
 package core.generators;
 
 import core.models.Model;
-import core.simulation.Cluster;
-import core.simulation.Point;
+import core.simulation.*;
 
 /**
  * Generator0 est une classe permettant de générer une liste contenant un unique
@@ -29,8 +28,8 @@ public class Generator0 implements Generator {
      * @return Une liste contenant un unique point d'intérêt
      */
     public Cluster[] getClusters() {
-        Point[] points = { new Point(model.toString() + "_0", model) };
-        Cluster[] cluster = { new Cluster(points) };
+        Point[] points = { new PointSingulier(model.toString() + "_0", model) };
+        Cluster[] cluster = { new Cluster(points, 0, 0) };
         return cluster;
     }
 }
