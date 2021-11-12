@@ -15,7 +15,7 @@ public class LoadingParam {
     static private String consumersFile = "src/parameters/consumers.csv";
     static private String producersFile = "src/parameters/producers.csv";
 
-    static private Model getModelFromString(String model, String args) {
+    static private Model getModelFromString(String model, String[] tokens) {
         switch (model) {
         case "House":
             return new House();
@@ -43,9 +43,8 @@ public class LoadingParam {
             // }
             String name = tokens[0].trim();
             int nb = Integer.parseInt(tokens[1].trim());
-            String args = tokens[5].trim();
             if (Integer.parseInt(tokens[3].trim()) == 0) {
-                Model model = getModelFromString(tokens[4].trim(), args); // A changer avec les args
+                Model model = getModelFromString(tokens[4].trim(), tokens); // A changer avec les args
                 for (int i = 0; i < nbCluster; i++) {
                     if (tokens[2].trim() == namesClusters.get(i)) {
                         for (int j = 0; j < nb; j++) {
