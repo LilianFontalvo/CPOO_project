@@ -34,6 +34,7 @@ public class Simulation {
         this.clusters = clusters;
         this.nbClusters = 0;
         for (Cluster cluster : clusters) {
+            cluster.getName();
             this.nbClusters++;
         }
         this.nbPoints = new int[nbClusters];
