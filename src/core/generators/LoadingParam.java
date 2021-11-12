@@ -15,21 +15,100 @@ public class LoadingParam {
     static private String consumersFile = "src/parameters/consumers.csv";
     static private String producersFile = "src/parameters/producers.csv";
 
+    static private Model getModelFromString(String model, String args) {
+        switch (model) {
+        case "House":
+            return new House();
+        case "Factory":
+            return new Factory();
+        case "SolarPlant":
+            return new SolarPlant();
+        case "NuclearPlant":
+            return new NuclearPlant();
+        default:
+            throw new IllegalArgumentException("The requested model '" + model + "' does not exist.");
+        }
+    }
+
+    static private void readPoint(String filename, int nbCluster, ArrayList<String> namesClusters,
+            ArrayList<ArrayList<Point>> listsPoints) throws NumberFormatException, IOException {
+        FileReader in = new FileReader(filename);
+        BufferedReader bin = new BufferedReader(in);
+        bin.readLine();
+        while (bin.ready()) {
+            String line = bin.readLine();
+            String[] tokens = line.split(";");
+            // for (String string : tokens) {
+            // System.out.println(string);
+            // }
+            String name = tokens[0].trim();
+            int nb = Integer.parseInt(tokens[1].trim());
+            String args = tokens[5].trim();
+            if (Integer.parseInt(tokens[3].trim()) == 0) {
+                Model model = getModelFromString(tokens[4].trim(), args); // A changer avec les args
+                for (int i = 0; i < nbCluster; i++) {
+                    if (tokens[2].trim() == namesClusters.get(i)) {
+                        for (int j = 0; j < nb; j++) {
+                            listsPoints.get(i).add(new PointSingulier(name, model));
+                        }
+                    }
+                }
+            } else {
+                // Complexe Point à faire (récursivité ?)
+            }
+        }
+        bin.close();
+    }
+
     static public Cluster[] readClusters() throws IOException {
+        ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+
+        ArrayList<String> namesClusters = new ArrayList<String>();
+        ArrayList<double[]> positionsClusters = new ArrayList<double[]>();
 
         FileReader in = new FileReader(clustersFile);
         BufferedReader binClusters = new BufferedReader(in);
-        ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+        binClusters.readLine();
         while (binClusters.ready()) {
             String line = binClusters.readLine();
             String[] tokens = line.split(";");
-
-            // double name = Double.parseDouble(tokens[0].trim());
-            // double age = Double.parseDouble(tokens[1].trim());
-            // Object[] array = arrayList.toArray()
+            namesClusters.add(tokens[0].trim());
+            double[] pos = new double[2];
+            pos[0] = Double.parseDouble(tokens[1].trim());
+            pos[1] = Double.parseDouble(tokens[2].trim());
+            positionsClusters.add(pos);
         }
         binClusters.close();
+
+        int nbCluster = namesClusters.size();
+        // System.out.println("nbCluster = " + nbCluster);
+
+        ArrayList<ArrayList<Point>> listsPoints = new ArrayList<ArrayList<Point>>();
+        for (int i = 0; i < nbCluster; i++) {
+            listsPoints.add(new ArrayList<Point>());
+        }
+
+        readPoint(consumersFile, nbCluster, namesClusters, listsPoints);
+        readPoint(producersFile, nbCluster, namesClusters, listsPoints);
+
+        for (int i = 0; i < nbCluster; i++) {
+            Point[] points = (Point[]) listsPoints.get(i).toArray(); // Exception in thread "main"
+                                                                     // java.lang.ClassCastException: class
+                                                                     // [Ljava.lang.Object; cannot be cast to class
+                                                                     // [Lcore.simulation.Point; ([Ljava.lang.Object; is
+                                                                     // in module java.base of loader 'bootstrap';
+                                                                     // [Lcore.simulation.Point; is in unnamed module of
+                                                                     // loader 'app')
+            double[] pos = positionsClusters.get(i);
+            clusters.add(new Cluster(namesClusters.get(i), points, pos[0], pos[1]));
+        }
         return (Cluster[]) clusters.toArray();
     }
-    
+
+    public static void main(String[] args) throws IOException {
+        Cluster[] listClusters = LoadingParam.readClusters();
+        Simulation sim2 = new Simulation(listClusters);
+        sim2.simOneDay(241, true);
+    }
+
 }

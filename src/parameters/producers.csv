@@ -1,2 +1,2 @@
-Name;Number;Cluster;NbIP;Model;{Param#1,Param#2,Param#3,...}
-Centrale;1;Cluster1;0;NuclearPlant;
+Name;Number;Cluster;NbIP;Model;{Param#1,Param#2,Param#3,...};
+Centrale;1;Cluster1;0;NuclearPlant;None;
