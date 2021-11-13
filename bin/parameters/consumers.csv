@@ -1,4 +1,4 @@
 Name;Number;Cluster;NbIC;Model;Param#1;Param#2;Param#3;...;
-MaisonIndividuelle;10;Cluster1;0;House;None;
-Quartier;5;Cluster1;100;None;None;
-MaisonQuartier;100;Cluster1;0;House;None;
+MaisonIndividuelle;10;Cluster1;0;House;;
+Quartier;5;Cluster1;100;;;
+MaisonQuartier;100;Cluster1;0;House;;

@@ -43,12 +43,24 @@ public class LoadingParam {
             // }
             String name = tokens[0].trim();
             int nb = Integer.parseInt(tokens[1].trim());
-            if (Integer.parseInt(tokens[3].trim()) == 0) {
+            int nbIP = Integer.parseInt(tokens[3].trim());
+            // System.out.println("nbIP = " + nbIP);
+            if (nbIP == 0) {
+                // System.out.println("was here 1 ...");
                 Model model = getModelFromString(tokens[4].trim(), tokens); // A changer avec les args
+                String clusterName = tokens[2].trim();
+                // System.out.println("clusterName = " + clusterName);
                 for (int i = 0; i < nbCluster; i++) {
-                    if (tokens[2].trim() == namesClusters.get(i)) {
+                    String nameCluster = namesClusters.get(i);
+                    // System.out.println("nameCluster = "+nameCluster);
+                    if (clusterName.equals(nameCluster)) {
+                        // System.out.println("was here 2 ...");
                         for (int j = 0; j < nb; j++) {
-                            listsPoints.get(i).add(new PointSingulier(name, model));
+                            ArrayList<Point> pointsAL = listsPoints.get(i);
+                            pointsAL.add(new PointSingulier(name, model));
+                            listsPoints.set(i, pointsAL);
+                            // System.out.println("size list of Points: "+pointsAL.size());
+                            
                         }
                     }
                 }
@@ -80,6 +92,7 @@ public class LoadingParam {
         binClusters.close();
 
         int nbCluster = namesClusters.size();
+        // System.out.println(namesClusters.get(0));
         // System.out.println("nbCluster = " + nbCluster);
 
         ArrayList<ArrayList<Point>> listsPoints = new ArrayList<ArrayList<Point>>();
@@ -91,17 +104,15 @@ public class LoadingParam {
         readPoint(producersFile, nbCluster, namesClusters, listsPoints);
 
         for (int i = 0; i < nbCluster; i++) {
-            Point[] points = (Point[]) listsPoints.get(i).toArray(); // Exception in thread "main"
-                                                                     // java.lang.ClassCastException: class
-                                                                     // [Ljava.lang.Object; cannot be cast to class
-                                                                     // [Lcore.simulation.Point; ([Ljava.lang.Object; is
-                                                                     // in module java.base of loader 'bootstrap';
-                                                                     // [Lcore.simulation.Point; is in unnamed module of
-                                                                     // loader 'app')
+            ArrayList<Point> pointsAL = listsPoints.get(i);
+            Point[] points = new Point[pointsAL.size()];
+            points = pointsAL.toArray(points);
             double[] pos = positionsClusters.get(i);
             clusters.add(new Cluster(namesClusters.get(i), points, pos[0], pos[1]));
         }
-        return (Cluster[]) clusters.toArray();
+        Cluster[] clustersA = new Cluster[nbCluster];
+        clustersA = clusters.toArray(clustersA);
+        return clustersA;
     }
 
     public static void main(String[] args) throws IOException {
