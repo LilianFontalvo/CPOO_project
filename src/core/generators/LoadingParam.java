@@ -15,7 +15,8 @@ public class LoadingParam {
     static private String consumersFile = "src/parameters/consumers.csv";
     static private String producersFile = "src/parameters/producers.csv";
 
-    static private Model getModelFromString(String model, String[] tokens) {
+    static private Model getModelFromString(String[] tokens) {
+        String model = tokens[4].trim();
         switch (model) {
         case "House":
             return new House();
@@ -30,6 +31,45 @@ public class LoadingParam {
         }
     }
 
+    static private PointComplexe ComplexPointGenerator(BufferedReader bin, String[] tokens, String name)
+            throws IOException {
+        ArrayList<Point> pointsAL = new ArrayList<Point>();
+        Point[] points = new Point[pointsAL.size()];
+        int nbTot = Integer.parseInt(tokens[3].trim());
+        int count = 0;
+        String nameCluster = tokens[2];
+        while ((count != nbTot) && (bin.ready())) {
+            String line = bin.readLine();
+            System.out.println("Complex Point: " + line);
+            tokens = line.split(";");
+            String nameP = tokens[0].trim();
+            int nb = Integer.parseInt(tokens[1].trim());
+            int nbIP = Integer.parseInt(tokens[3].trim());
+            String clusterName = tokens[2].trim();
+            if (!clusterName.equals(nameCluster))
+                throw new IllegalArgumentException(
+                        "Integrated point of complex point '" + name + "' is in the wrong cluster.");
+            if (nbIP == 0) {
+                Model model = getModelFromString(tokens);
+                for (int i = 0; i < nb; i++) {
+                    pointsAL.add(new PointSingulier(nameP, model));
+                    count++;
+                }
+            } else {
+                PointComplexe point = ComplexPointGenerator(bin, tokens, name);
+                for (int i = 0; i < nb; i++) {
+                    pointsAL.add(point);
+                    count++;
+                }
+            }
+            if (count != nbTot)
+                throw new IllegalArgumentException(
+                        "Wrong number of integrated points. Expected " + nbTot + ", given " + count);
+        }
+        points = pointsAL.toArray(points);
+        return new PointComplexe(name, points);
+    }
+
     static private void readPoint(String filename, int nbCluster, ArrayList<String> namesClusters,
             ArrayList<ArrayList<Point>> listsPoints) throws NumberFormatException, IOException {
         FileReader in = new FileReader(filename);
@@ -37,35 +77,36 @@ public class LoadingParam {
         bin.readLine();
         while (bin.ready()) {
             String line = bin.readLine();
+            System.out.println("readPoint: " + line);
             String[] tokens = line.split(";");
-            // for (String string : tokens) {
-            // System.out.println(string);
-            // }
             String name = tokens[0].trim();
             int nb = Integer.parseInt(tokens[1].trim());
             int nbIP = Integer.parseInt(tokens[3].trim());
-            // System.out.println("nbIP = " + nbIP);
+            String clusterName = tokens[2].trim();
             if (nbIP == 0) {
-                // System.out.println("was here 1 ...");
-                Model model = getModelFromString(tokens[4].trim(), tokens); // A changer avec les args
-                String clusterName = tokens[2].trim();
-                // System.out.println("clusterName = " + clusterName);
+                Model model = getModelFromString(tokens);
                 for (int i = 0; i < nbCluster; i++) {
                     String nameCluster = namesClusters.get(i);
-                    // System.out.println("nameCluster = "+nameCluster);
                     if (clusterName.equals(nameCluster)) {
-                        // System.out.println("was here 2 ...");
                         for (int j = 0; j < nb; j++) {
                             ArrayList<Point> pointsAL = listsPoints.get(i);
                             pointsAL.add(new PointSingulier(name, model));
                             listsPoints.set(i, pointsAL);
-                            // System.out.println("size list of Points: "+pointsAL.size());
-                            
                         }
                     }
                 }
             } else {
-                // Complexe Point à faire (récursivité ?)
+                for (int i = 0; i < nbCluster; i++) {
+                    String nameCluster = namesClusters.get(i);
+                    if (clusterName.equals(nameCluster)) {
+                        PointComplexe point = ComplexPointGenerator(bin, tokens, name);
+                        for (int j = 0; j < nb; j++) {
+                            ArrayList<Point> pointsAL = listsPoints.get(i);
+                            pointsAL.add(point);
+                            listsPoints.set(i, pointsAL);
+                        }
+                    }
+                }
             }
         }
         bin.close();
@@ -92,8 +133,6 @@ public class LoadingParam {
         binClusters.close();
 
         int nbCluster = namesClusters.size();
-        // System.out.println(namesClusters.get(0));
-        // System.out.println("nbCluster = " + nbCluster);
 
         ArrayList<ArrayList<Point>> listsPoints = new ArrayList<ArrayList<Point>>();
         for (int i = 0; i < nbCluster; i++) {
