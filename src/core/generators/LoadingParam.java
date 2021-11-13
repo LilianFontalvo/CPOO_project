@@ -64,7 +64,7 @@ public class LoadingParam {
             }
             if (count != nbTot)
                 throw new IllegalArgumentException(
-                        "Wrong number of integrated points. Expected " + nbTot + ", given " + count);
+                        "Wrong number of integrated points. Expected " + nbTot + ", given " + count +".");
         }
         points = pointsAL.toArray(points);
         return new PointComplexe(name, points);
