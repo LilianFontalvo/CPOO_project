@@ -20,6 +20,8 @@ public class LoadingParam {
         switch (model) {
         case "House":
             return new House();
+        case "RandHouse":
+            return new RandHouse();
         case "Factory":
             return new Factory();
         case "SolarPlant":

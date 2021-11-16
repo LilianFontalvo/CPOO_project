@@ -17,6 +17,6 @@ public class ClusterSansProd extends Cluster {
      *         chemin d'approvisionnement en énergie
      */
     public double PertesPuissCluster() {
-        return chemin_Approvisionnement.pertesChemin;
+        return chemin_Approvisionnement.pertesChemin();
     }
 }
