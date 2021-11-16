@@ -21,7 +21,14 @@ public class LoadingParam {
         case "House":
             return new House();
         case "RandHouse":
-            return new RandHouse();
+            int i = 0;
+            String token = "";
+            for (String string : tokens) {
+                token = string;
+                i++;
+            }
+            if (i == 6) return new RandHouse(Long.parseUnsignedLong(token.trim()));
+            else return new RandHouse();
         case "Factory":
             return new Factory();
         case "SolarPlant":
@@ -42,7 +49,6 @@ public class LoadingParam {
         String nameCluster = tokens[2];
         while ((count != nbTot) && (bin.ready())) {
             String line = bin.readLine();
-            System.out.println("Complex Point: " + line);
             tokens = line.split(";");
             String nameP = tokens[0].trim();
             int nb = Integer.parseInt(tokens[1].trim());
@@ -52,8 +58,8 @@ public class LoadingParam {
                 throw new IllegalArgumentException(
                         "Integrated point of complex point '" + name + "' is in the wrong cluster.");
             if (nbIP == 0) {
-                Model model = getModelFromString(tokens);
                 for (int i = 0; i < nb; i++) {
+                    Model model = getModelFromString(tokens);
                     pointsAL.add(new PointSingulier(nameP, model));
                     count++;
                 }
@@ -79,19 +85,18 @@ public class LoadingParam {
         bin.readLine();
         while (bin.ready()) {
             String line = bin.readLine();
-            System.out.println("readPoint: " + line);
             String[] tokens = line.split(";");
             String name = tokens[0].trim();
             int nb = Integer.parseInt(tokens[1].trim());
             int nbIP = Integer.parseInt(tokens[3].trim());
             String clusterName = tokens[2].trim();
             if (nbIP == 0) {
-                Model model = getModelFromString(tokens);
                 for (int i = 0; i < nbCluster; i++) {
                     String nameCluster = namesClusters.get(i);
                     if (clusterName.equals(nameCluster)) {
                         for (int j = 0; j < nb; j++) {
                             ArrayList<Point> pointsAL = listsPoints.get(i);
+                            Model model = getModelFromString(tokens);
                             pointsAL.add(new PointSingulier(name, model));
                             listsPoints.set(i, pointsAL);
                         }
