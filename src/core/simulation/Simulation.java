@@ -29,7 +29,6 @@ public class Simulation {
      */
     private int[] nbPoints;
 
-
     public Simulation(Cluster[] clusters) {
         this.clusters = clusters;
         this.nbClusters = 0;
@@ -53,14 +52,21 @@ public class Simulation {
     /**
      * Affiche une ligne du bilan au format CSV.
      * 
-     * @param i         Entier représentant la minute ou le jour
-     * @param powerCons La puissance moyenne consommée en W
-     * @param powerProd La puissance moyenne produite en W
-     * @param cumulCons L'énergie consommée cumulée en Wh
-     * @param cumulProd L'énergie produite cumulée en Wh
+     * @param i           Entier représentant la minute ou le jour
+     * @param powerCons   La puissance moyenne consommée en W
+     * @param powerProd   La puissance moyenne produite en W
+     * @param cumulCons   L'énergie consommée cumulée en Wh
+     * @param cumulProd   L'énergie produite cumulée en Wh
+     * @param powerPertes La puissance perdue due au transport d'énergie dans
+     *                    l'ensemble des lignes en W
+     * @param cumulPertes La puissance perdue due au transport d'énergie dans
+     *                    l'ensemble des lignes cumulée en Wh
+     * 
      */
-    private void printLine(int i, double powerCons, double powerProd, double cumulCons, double cumulProd) {
-        System.out.println(i + ";" + powerCons + ";" + powerProd + ";" + cumulCons + ";" + cumulProd);
+    private void printLine(int i, double powerCons, double powerProd, double cumulCons, double cumulProd,
+            double powerPertes, double cumulPertes) {
+        System.out.println(i + ";" + powerCons + ";" + powerProd + ";" + cumulCons + ";" + cumulProd + ";" + powerPertes
+                + ";" + cumulPertes);
     }
 
     /**
@@ -76,7 +82,6 @@ public class Simulation {
         return clusters[c].getPowerConsMin(min, day);
     }
 
-
     /**
      * Permet de recevoir la puissance électrique produite d'un certain cluster
      * 
@@ -90,7 +95,21 @@ public class Simulation {
         return clusters[c].getPowerProdMin(min, day);
     }
 
-       /**
+    /**
+     * Permet de calculer la puissance électrique perdue par les lignes d'un certain
+     * cluster
+     * 
+     * @param c   Entier renvoyant au cième élément de la liste "clusters"
+     * @param min Entier représentant une minutes de la journée (entre 0 et 1439)
+     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * @return La puissance électrique perdue par les lignes à la minute et au jour
+     *         donnés de clusters[c]
+     */
+    public double getPowerPertesMin(int c) {
+        return clusters[c].getPowerPertesMin();
+    }
+
+    /**
      * Calcule l'enrgie totale consommée dans la journée
      * 
      * @param c   Entier renvoyant au cième élément de la liste "clusters"
@@ -101,7 +120,7 @@ public class Simulation {
         return clusters[c].getConsDay(day);
     }
 
-   /**
+    /**
      * Calcule l'enrgie totale produite dans la journée
      * 
      * @param c   Entier renvoyant au cième élément de la liste "clusters"
@@ -113,38 +132,55 @@ public class Simulation {
     }
 
     /**
+     * Calcule l'energie totale perdue dans les lignes dans la journée
+     * 
+     * @param c Entier renvoyant au cième élément de la liste "clusters"
+     * @return L'énergie perdue à cause des lignes en Wh dans la journée day
+     */
+    public double getPertesDay(int c) {
+        return clusters[c].getPertesDay();
+    }
+
+    /**
      * Simule et affiche dans la console la production/consommation de tous les
      * points d'intérêt de la liste "points" à chaque minute selon le format:
      * "minute; puissance instantannée consommée; puissance instantannée produite;
      * énergie cumulée consommée; énergie cumulée produite", respectivement en W et
      * en Wh
-     *  
-     * @param day Entier représentant un jour de l'année (entre 0 et 364)
+     * 
+     * @param day   Entier représentant un jour de l'année (entre 0 et 364)
      * @param graph Booléen pour afficher ou non un graphique des données
      */
     public void simOneDay(int day, boolean graph) {
         double powerCons;
         double powerProd;
+        double powerPertes;
         double cumulCons = 0;
         double cumulProd = 0;
+        double cumulPertes = 0;
         Plot plot = new Plot();
         for (int i = 0; i < 1440; i++) {
             powerCons = 0;
             powerProd = 0;
-            for (int k = 0; k < nbClusters; k++) { 
+            powerPertes = 0;
+            for (int k = 0; k < nbClusters; k++) {
                 powerCons += getPowerConsMin(k, i, day);
                 powerProd += getPowerProdMin(k, i, day);
+                powerPertes += getPowerPertesMin(k); // Dans notre modèle, les pertes dues à l'acheminement dans les
+                                                     // lignes électriques sont constantes.
             }
-            if (graph){
+            if (graph) {
                 plot.addPoint(0, i, powerCons, true);
                 plot.addPoint(1, i, powerProd, true);
+                plot.addPoint(2, i, powerPertes, true);
             }
             cumulCons += powerCons; // en Wmin, or on veut en Wh, d'où le /60
             cumulProd += powerProd; // en Wmin, or on veut en Wh, d'où le /60
-            printLine(i, powerCons, powerProd, cumulCons/60, cumulProd/60);
+            cumulPertes += powerPertes; // en Wmin, or on veut en Wh, d'où le /60
+            printLine(i, powerCons, powerProd, cumulCons / 60, cumulProd / 60, powerPertes, cumulPertes / 60);
         }
-        if (graph){
-            JFrame frame = new JFrame("Consumption and production over day "+day);
+        if (graph) {
+            JFrame frame = new JFrame("Consumption and production over day " + day);
             frame.add(plot);
             frame.pack();
             frame.setVisible(true);
@@ -163,25 +199,31 @@ public class Simulation {
     public void simOneYear(boolean graph) {
         double dailyCons;
         double dailyProd;
+        double dailyPertes;
         double cumulCons = 0;
         double cumulProd = 0;
+        double cumulPertes = 0;
         Plot plot = new Plot();
         for (int i = 0; i < 365; i++) {
             dailyCons = 0;
             dailyProd = 0;
+            dailyPertes = 0;
             for (int k = 0; k < nbClusters; k++) {
                 dailyCons += getConsDay(k, i); // en Wh, or on veut des W, d'où le /24
                 dailyProd += getProdDay(k, i); // en Wh, or on veut des W, d'où le /24
+                dailyPertes += getPertesDay(k); // en Wh, or on veut des W, d'où le /24
             }
             cumulCons += dailyCons;
             cumulProd += dailyProd;
-            if (graph){
+            cumulPertes += dailyPertes;
+            if (graph) {
                 plot.addPoint(0, i, dailyCons, true);
                 plot.addPoint(1, i, dailyProd, true);
+                plot.addPoint(2, i, dailyPertes, true);
             }
-            printLine(i, dailyCons / 24, dailyProd / 24, cumulCons, cumulProd);
+            printLine(i, dailyCons / 24, dailyProd / 24, cumulCons, cumulProd, dailyPertes / 24, cumulPertes);
         }
-        if (graph){
+        if (graph) {
             JFrame frame = new JFrame("Consumption and production over a year");
             frame.add(plot);
             frame.pack();

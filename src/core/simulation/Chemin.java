@@ -3,14 +3,16 @@
 
 package core.simulation;
 
+import java.util.ArrayList;
+
 public class Chemin {
-    private ArrayListe<Ligne> Liste_de_lignes;
+    private ArrayList<Ligne> Liste_de_lignes;
 
     /**
      * 
      * @return La liste des lignes qu'emprunte le chemin.
      */
-    public ArrayListe<Ligne> getListe_de_lignes() {
+    public ArrayList<Ligne> getListe_de_lignes() {
         return Liste_de_lignes;
     }
 

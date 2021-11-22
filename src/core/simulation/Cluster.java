@@ -6,7 +6,7 @@ Chaque cluster contient une liste de points, consommateurs ou récepteurs.
 
 package core.simulation;
 
-public class Cluster extends PointComplexe {
+public abstract class Cluster extends PointComplexe {
 
     private double x; // Abscisse du cluster
     private double y; // Ordonnée du cluster
@@ -65,5 +65,11 @@ public class Cluster extends PointComplexe {
     public double getY() {
         return y;
     }
+
+    public double getPertesDay() {
+        return (24 * 60 * getPowerPertesMin());
+    }
+
+    public abstract double getPowerPertesMin();
 
 }
