@@ -13,7 +13,7 @@ public class ClusterAvecProd extends Cluster {
      * Construit un nouveau cluster avec production
      * 
      * @param name          nom de la ville
-     * @param points Points du cluster consommateurs
+     * @param points        Points du cluster consommateurs
      * @param producteur    Points du cluster producteur
      * @param x             Abscisse du cluster
      * @param y             Ordonnée du cluster

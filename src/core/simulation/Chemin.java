@@ -8,6 +8,12 @@ import java.util.ArrayList;
 public class Chemin {
     private ArrayList<Ligne> Liste_de_lignes;
 
+
+    public Chemin(ArrayList<Ligne> Liste_de_lignes) {
+        this.Liste_de_lignes = Liste_de_lignes;
+    }
+    
+
     /**
      * 
      * @return La liste des lignes qu'emprunte le chemin.

@@ -1,0 +1,16 @@
+Auteur Ariane Santrot
+Notice pour l'extension 1 décrivant le format de sortie
+
+Format de sortie : i ; powerCons ; powerProd ; cumulCons ; cumulProd ; powerPertes ; cumulPertes
+     * i           temps en minute ou le jour
+     * powerCons   La puissance moyenne consommée en W
+     * powerProd   La puissance moyenne produite en W
+     * cumulCons   L'énergie consommée cumulée en Wh
+     * cumulProd   L'énergie produite cumulée en Wh
+     * powerPertes La puissance perdue due au transport d'énergie dans l'ensemble des lignes en W
+     * cumulPertes La puissance perdue due au transport d'énergie dans l'ensemble des lignes cumulée en Wh
+
+Les pertes par minute sont constantes au cours du temps, car un cluster sans producteur est en permanence lié à un cluster productif.
+
+Les pertes sont consignées dans les clusters uniquement consommateurs, car les chemins d'approvisionnement sont consignés dans ces clusters-ci.
+

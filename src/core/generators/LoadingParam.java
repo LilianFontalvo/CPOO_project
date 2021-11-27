@@ -146,15 +146,15 @@ public class LoadingParam {
             listsPoints.add(new ArrayList<Point>());
         }
 
-        readPoint(consumersFile, nbCluster, namesClusters, listsPoints);
         readPoint(producersFile, nbCluster, namesClusters, listsPoints);
+        readPoint(consumersFile, nbCluster, namesClusters, listsPoints);
 
         for (int i = 0; i < nbCluster; i++) {
             ArrayList<Point> pointsAL = listsPoints.get(i);
             Point[] points = new Point[pointsAL.size()];
             points = pointsAL.toArray(points);
             double[] pos = positionsClusters.get(i);
-            clusters.add(new Cluster(namesClusters.get(i), points, pos[0], pos[1]));
+            clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1]));
         }
         Cluster[] clustersA = new Cluster[nbCluster];
         clustersA = clusters.toArray(clustersA);

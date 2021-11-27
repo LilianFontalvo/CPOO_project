@@ -16,11 +16,12 @@ public class ClusterSansProd extends Cluster {
      * @param y             Ordonnée du cluster
      * 
      */
-    public ClusterSansProd(String name, Point[] consommateurs, double x, double y) {
+    public ClusterSansProd(String name, Point[] consommateurs, double x, double y, Chemin chemin) {
         super(name, consommateurs, x, y);
+        cheminApprovisionnement = chemin;
     }
 
-    private Chemin chemin_Approvisionnement; // Chemin d'approvisionnement du cluster
+    private Chemin cheminApprovisionnement; // Chemin d'approvisionnement du cluster
 
     /**
      * 
@@ -28,7 +29,7 @@ public class ClusterSansProd extends Cluster {
      *         chemin d'approvisionnement en énergie
      */
     public double getPowerPertesMin() {
-        return chemin_Approvisionnement.pertesChemin();
+        return cheminApprovisionnement.pertesChemin();
     }
 
 }

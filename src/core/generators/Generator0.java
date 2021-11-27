@@ -1,5 +1,7 @@
 package core.generators;
 
+import java.util.ArrayList;
+
 import core.models.Model;
 import core.simulation.*;
 
@@ -29,7 +31,8 @@ public class Generator0 implements Generator {
      */
     public Cluster[] getClusters() {
         Point[] points = { new PointSingulier(model.toString() + "_0", model) };
-        Cluster[] cluster = { new Cluster(points, 0, 0) };
+        ArrayList<Ligne> lignes = new ArrayList<Ligne>();
+        Cluster[] cluster = { new ClusterSansProd("null", points, 0, 0, new Chemin(lignes)) };
         return cluster;
     }
 }
