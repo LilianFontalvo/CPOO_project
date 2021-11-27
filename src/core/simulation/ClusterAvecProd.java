@@ -7,7 +7,8 @@ package core.simulation;
 
 public class ClusterAvecProd extends Cluster {
 
-    private Point producteur; // Attribut : le producteur du cluster
+    private Point[] consommateurs;  // Attribut : le producteur du cluster
+    private Point producteur;       // Attribut : le producteur du cluster
 
     /**
      * Construit un nouveau cluster avec production
@@ -20,8 +21,20 @@ public class ClusterAvecProd extends Cluster {
      * 
      */
     public ClusterAvecProd(String name, Point[] consommateurs, double x, double y, Point producteur) {
-        super(name, consommateurs, x, y);
+        super(name, null, x, y);
+        this.consommateurs = consommateurs;
         this.producteur = producteur;
+        int nb = 0;
+        for (Point conso : consommateurs) {
+            nb++;
+            conso.getName();
+        }
+        Point[] points = new Point[nb+1];
+        for (int i = 0; i<nb; i++){
+            points[i] = consommateurs[i];
+        }
+        points[nb] = producteur;
+        super.setPoints(points);
     }
 
     /**

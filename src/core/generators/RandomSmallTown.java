@@ -15,7 +15,7 @@ public class RandomSmallTown extends Generator1 {
     public RandomSmallTown() {
         super(null, null);
         Random rand = new Random();
-        Model[] listM = { new House(), new Factory(), new SolarPlant(), new NuclearPlant() };
+        Model[] listM = { new RandHouse(), new Factory(), new SolarPlant(), new NuclearPlant() };
         listModel = listM;
         int nH = 1000 + rand.nextInt(9001); // pose un nombre aléatoire de points
         int nF = 1 + rand.nextInt(5);

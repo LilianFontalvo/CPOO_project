@@ -72,4 +72,7 @@ public abstract class Cluster extends PointComplexe {
 
     public abstract double getPowerPertesMin();
 
+    protected void setPoints(Point[] points){
+        this.points = points;
+    }
 }

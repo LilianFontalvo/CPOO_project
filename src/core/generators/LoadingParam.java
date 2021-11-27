@@ -27,8 +27,10 @@ public class LoadingParam {
                 token = string;
                 i++;
             }
-            if (i == 6) return new RandHouse(Long.parseUnsignedLong(token.trim()));
-            else return new RandHouse();
+            if (i == 6)
+                return new RandHouse(Long.parseUnsignedLong(token.trim()));
+            else
+                return new RandHouse();
         case "Factory":
             return new Factory();
         case "SolarPlant":
@@ -72,14 +74,14 @@ public class LoadingParam {
             }
             if (count != nbTot)
                 throw new IllegalArgumentException(
-                        "Wrong number of integrated points. Expected " + nbTot + ", given " + count +".");
+                        "Wrong number of integrated points. Expected " + nbTot + ", given " + count + ".");
         }
         points = pointsAL.toArray(points);
         return new PointComplexe(name, points);
     }
 
     static private void readPoint(String filename, int nbCluster, ArrayList<String> namesClusters,
-            ArrayList<ArrayList<Point>> listsPoints) throws NumberFormatException, IOException {
+            ArrayList<ArrayList<Point>> listsPoints, boolean isProducer) throws NumberFormatException, IOException {
         FileReader in = new FileReader(filename);
         BufferedReader bin = new BufferedReader(in);
         bin.readLine();
@@ -90,6 +92,9 @@ public class LoadingParam {
             int nb = Integer.parseInt(tokens[1].trim());
             int nbIP = Integer.parseInt(tokens[3].trim());
             String clusterName = tokens[2].trim();
+            if ((isProducer) & (nb != 1))
+                throw new IllegalArgumentException(
+                        "Wrong number of Producers in the cluster. Expected 1, given " + nb + ".");
             if (nbIP == 0) {
                 for (int i = 0; i < nbCluster; i++) {
                     String nameCluster = namesClusters.get(i);
@@ -141,20 +146,35 @@ public class LoadingParam {
 
         int nbCluster = namesClusters.size();
 
-        ArrayList<ArrayList<Point>> listsPoints = new ArrayList<ArrayList<Point>>();
+        ArrayList<ArrayList<Point>> listsProd = new ArrayList<ArrayList<Point>>();
         for (int i = 0; i < nbCluster; i++) {
-            listsPoints.add(new ArrayList<Point>());
+            listsProd.add(new ArrayList<Point>());
         }
 
-        readPoint(producersFile, nbCluster, namesClusters, listsPoints);
-        readPoint(consumersFile, nbCluster, namesClusters, listsPoints);
+        ArrayList<ArrayList<Point>> listsConso = new ArrayList<ArrayList<Point>>();
+        for (int i = 0; i < nbCluster; i++) {
+            listsConso.add(new ArrayList<Point>());
+        }
+
+
+        readPoint(producersFile, nbCluster, namesClusters, listsProd, true);
+        readPoint(consumersFile, nbCluster, namesClusters, listsConso, false);
 
         for (int i = 0; i < nbCluster; i++) {
-            ArrayList<Point> pointsAL = listsPoints.get(i);
+            ArrayList<Point> pointsAL = listsConso.get(i);
             Point[] points = new Point[pointsAL.size()];
             points = pointsAL.toArray(points);
             double[] pos = positionsClusters.get(i);
-            clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1]));
+            ArrayList<Point> prodsAL = listsProd.get(i);
+            if (prodsAL.isEmpty()){
+                ArrayList<Ligne> lignes = new ArrayList<Ligne>();
+                clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1], new Chemin(lignes)));
+            } else {
+                int nb = prodsAL.size();
+                if (nb != 1) throw new IllegalArgumentException(
+                    "Wrong number of Producers in the cluster. Expected 1, given " + nb + ".");
+                    clusters.add(new ClusterAvecProd(namesClusters.get(i), points, pos[0], pos[1], prodsAL.get(0)));
+            }
         }
         Cluster[] clustersA = new Cluster[nbCluster];
         clustersA = clusters.toArray(clustersA);
