@@ -42,7 +42,7 @@ public class ClusterAvecProd extends Cluster {
      */
     public double SurplusPuissMin(int min, int day) {
         double consommation = 0;
-        for (Point point : points) {
+        for (Point point : consommateurs) {
             consommation += point.getPowerConsMin(min, day);
         }
         return (producteur.getPowerProdMin(min, day) - consommation);

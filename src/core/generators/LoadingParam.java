@@ -11,9 +11,10 @@ import core.simulation.*;
 public class LoadingParam {
 
     static private String clustersFile = "src/parameters/clusters.csv";
-    static private String linesFile = "src/parameters/lines.csv";
     static private String consumersFile = "src/parameters/consumers.csv";
     static private String producersFile = "src/parameters/producers.csv";
+    static private String linesFile = "src/parameters/lines.csv";
+    static private String pathsFile = "src/parameters/paths.csv";
 
     static private Model getModelFromString(String[] tokens) {
         String model = tokens[4].trim();
@@ -124,6 +125,81 @@ public class LoadingParam {
         bin.close();
     }
 
+    static private void readLines(String filename, ArrayList<String> namesClusters, ArrayList<Ligne> listLines,
+            ArrayList<String> names, ArrayList<Cluster> clusters) throws IOException {
+        FileReader in = new FileReader(filename);
+        BufferedReader binLines = new BufferedReader(in);
+        binLines.readLine();
+        while (binLines.ready()) {
+            String line = binLines.readLine();
+            String[] tokens = line.split(";");
+            String name = tokens[0].trim();
+            String startName = tokens[1].trim();
+            String endName = tokens[2].trim();
+            double coef = Double.parseDouble(tokens[3].trim());
+            Cluster start = null;
+            Cluster end = null;
+            for (Cluster cluster : clusters) {
+                if (startName.equals(cluster.getName())) {
+                    start = cluster;
+                    break;
+                }
+            }
+            for (Cluster cluster : clusters) {
+                if (endName.equals(cluster.getName())) {
+                    end = cluster;
+                    break;
+                }
+            }
+            listLines.add(new Ligne(name, start, end, coef));
+        }
+        binLines.close();
+    }
+
+    static void readPath(String filename, ArrayList<Chemin> listPaths, ArrayList<Ligne> listLines,
+            ArrayList<Cluster> clusters) throws IOException {
+        FileReader in = new FileReader(filename);
+        BufferedReader binPaths = new BufferedReader(in);
+        binPaths.readLine();
+        while (binPaths.ready()) {
+            ArrayList<Ligne> lines = new ArrayList<Ligne>();
+            String line = binPaths.readLine();
+            String[] tokens = line.split(";");
+            String name = tokens[0].trim();
+            String startName = tokens[1].trim();
+            String endName = tokens[2].trim();
+            int i = 0;
+            for (String nameLine : tokens) {
+                if (i >= 3){
+                    Ligne ligne1 = null;
+                    for (Ligne ligne2 : listLines) {
+                        if (nameLine.equals(ligne2.getNom())) {
+                            ligne1 = ligne2;
+                            lines.add(ligne1);
+                        }
+                    }
+                }
+                i++;
+            }
+            Cluster start = null;
+            Cluster end = null;
+            for (Cluster cluster : clusters) {
+                if (startName.equals(cluster.getName())) {
+                    start = cluster;
+                    break;
+                }
+            }
+            for (Cluster cluster : clusters) {
+                if (endName.equals(cluster.getName())) {
+                    end = cluster;
+                    break;
+                }
+            }
+            listPaths.add(new Chemin(name, start, end, lines));
+        }
+        binPaths.close();
+    }
+
     static public Cluster[] readClusters() throws IOException {
         ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 
@@ -150,14 +226,12 @@ public class LoadingParam {
         for (int i = 0; i < nbCluster; i++) {
             listsProd.add(new ArrayList<Point>());
         }
+        readPoint(producersFile, nbCluster, namesClusters, listsProd, true);
 
         ArrayList<ArrayList<Point>> listsConso = new ArrayList<ArrayList<Point>>();
         for (int i = 0; i < nbCluster; i++) {
             listsConso.add(new ArrayList<Point>());
         }
-
-
-        readPoint(producersFile, nbCluster, namesClusters, listsProd, true);
         readPoint(consumersFile, nbCluster, namesClusters, listsConso, false);
 
         for (int i = 0; i < nbCluster; i++) {
@@ -167,8 +241,7 @@ public class LoadingParam {
             double[] pos = positionsClusters.get(i);
             ArrayList<Point> prodsAL = listsProd.get(i);
             if (prodsAL.isEmpty()){
-                ArrayList<Ligne> lignes = new ArrayList<Ligne>();
-                clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1], new Chemin(lignes)));
+                clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1], null));
             } else {
                 int nb = prodsAL.size();
                 if (nb != 1) throw new IllegalArgumentException(
@@ -176,8 +249,35 @@ public class LoadingParam {
                     clusters.add(new ClusterAvecProd(namesClusters.get(i), points, pos[0], pos[1], prodsAL.get(0)));
             }
         }
-        Cluster[] clustersA = new Cluster[nbCluster];
-        clustersA = clusters.toArray(clustersA);
+        
+        ArrayList<Ligne> listLines = new ArrayList<Ligne>();
+        readLines(linesFile, namesClusters, listLines, namesClusters, clusters);
+
+        ArrayList<Chemin> listPaths = new ArrayList<Chemin>();
+        readPath(pathsFile, listPaths, listLines, clusters);
+
+
+    Cluster[] clustersA = new Cluster[nbCluster];
+        for (int i = 0; i < nbCluster; i++) {
+            ArrayList<Point> prodsAL = listsProd.get(i);
+            Cluster cluster = clusters.get(i);
+            if (prodsAL.isEmpty()){
+                ClusterSansProd clustersp = (ClusterSansProd) cluster;
+                String name = cluster.getName();
+                for (Chemin path : listPaths) {
+                    String startName = path.getDépart().getName();
+                    String endName = path.getArrivée().getName();
+                    if ((name.equals(startName))
+                            || (name.equals(endName))) {
+                        clustersp.setChemin(path);
+                    }
+                }
+                clustersA[i] = clustersp;
+            } else {
+                clustersA[i] = cluster;
+            }
+        }
+
         return clustersA;
     }
 
@@ -186,5 +286,4 @@ public class LoadingParam {
         Simulation sim2 = new Simulation(listClusters);
         sim2.simOneDay(241, true);
     }
-
 }

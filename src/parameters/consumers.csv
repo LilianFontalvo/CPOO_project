@@ -1,5 +1,5 @@
 Name;Number;Cluster;NbIC;Model;Param#1;Param#2;Param#3;...;
-MaisonIndividuelle;10;Cluster1;0;House;;
+MaisonIndividuelle;10;Cluster2;0;House;;
 District;5;Cluster1;20;;;
 Quartier;20;Cluster1;100;;;
 MaisonQuartier;100;Cluster1;0;RandHouse;;

@@ -6,13 +6,45 @@ package core.simulation;
 import java.util.ArrayList;
 
 public class Chemin {
+    private String nom;
+    private Cluster départ;
+    private Cluster arrivée;
     private ArrayList<Ligne> Liste_de_lignes;
 
 
-    public Chemin(ArrayList<Ligne> Liste_de_lignes) {
+    public Chemin(String nom, Cluster départ, Cluster arrivée, ArrayList<Ligne> Liste_de_lignes) {
+        this.nom = nom;
+        this.départ = départ;
+        this.arrivée = arrivée;
         this.Liste_de_lignes = Liste_de_lignes;
     }
     
+    
+    public Chemin(ArrayList<Ligne> Liste_de_lignes) {
+        this("LigneStandard",null,null, Liste_de_lignes);
+    }
+
+    /**
+     * 
+     * @return Le nom du chemin.
+     */
+    public String getNom() {
+        return nom;
+    }
+
+    /**
+     * 
+     * @return Le départ du chemin.
+     */
+    public Cluster getDépart() {
+        return départ;
+    }/**
+     * 
+     * @return L'arrivée chemin.
+     */
+    public Cluster getArrivée() {
+        return arrivée;
+    }
 
     /**
      * 

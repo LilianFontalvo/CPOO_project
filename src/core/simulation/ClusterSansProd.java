@@ -32,4 +32,13 @@ public class ClusterSansProd extends Cluster {
         return cheminApprovisionnement.pertesChemin();
     }
 
+    public Chemin getChemin() {
+        return this.cheminApprovisionnement;
+    }
+
+    public void setChemin(Chemin cheminApprovisionnement) {
+        this.cheminApprovisionnement = cheminApprovisionnement;
+    }
+
+
 }
