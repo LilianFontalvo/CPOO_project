@@ -280,10 +280,4 @@ public class LoadingParam {
 
         return clustersA;
     }
-
-    public static void main(String[] args) throws IOException {
-        Cluster[] listClusters = LoadingParam.readClusters();
-        Simulation sim2 = new Simulation(listClusters);
-        sim2.simOneDay(241, true);
-    }
 }
