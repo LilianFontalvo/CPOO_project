@@ -2,6 +2,13 @@ package core.simulation;
 
 import core.models.Model;
 
+/**
+ * Sous-classe de point réprésentant un point singulier dans la simulation.
+ * Un point singulier représente une entité physique suivant un modèle.
+ * 
+ * @author Lilian Fontalvo
+ * @version 1.0
+ */
 public class PointSingulier extends Point{
     protected Model model;
 
@@ -10,10 +17,18 @@ public class PointSingulier extends Point{
         this.model = model;
     }
 
+    /**
+     * 
+     * @return Le nom du Point
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 
+     * @return Le modèle suivi par le Point
+     */
     public Model getModel() {
         return model;
     }
@@ -34,5 +49,4 @@ public class PointSingulier extends Point{
         return model.getProdDay(day);
     }
 
-    
 }

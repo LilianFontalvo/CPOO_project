@@ -1,5 +1,13 @@
 package core.simulation;
 
+/**
+ * Sous-classe de point réprésentant un point complexe dans la simulation.
+ * Un point complexe regroupe plusieurs point (complexe ou non) dans une même
+ * entité.
+ * 
+ * @author Lilian Fontalvo
+ * @version 1.0
+ */
 public class PointComplexe extends Point{
     protected Point[] points;
 
@@ -8,14 +16,17 @@ public class PointComplexe extends Point{
         this.points = points;
     }
 
+    /**
+     * 
+     * @return Le nom du Point
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * Renvoie le modèle que suit le point d'intérêt
      * 
-     * @return Le modèle du Point
+     * @return Une liste des points composant le point complexe
      */
     public Point[] getPoints() {
         return points;
