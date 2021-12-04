@@ -232,4 +232,8 @@ public class Simulation {
         }
     }
 
+    public Cluster[] getClusters() {
+        return this.clusters;
+    }
+
 }

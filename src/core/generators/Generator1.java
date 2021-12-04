@@ -6,9 +6,9 @@ import core.models.Model;
 import core.simulation.Cluster;
 import core.simulation.*;
 
-
 /**
- * Generator1 est une classe permettant de générer une liste de points d'intérêt
+ * Generator1 est une classe permettant de générer un cluster contenant des
+ * points d'intérêt
  * en fonction d'une liste de modèle à suivre et de leur répartition. Genrator1
  * implémente l'interface Generator.
  * 
@@ -34,9 +34,9 @@ public class Generator1 implements Generator {
     }
 
     /**
-     * Calcule le nombre total de points de la liste à construire
+     * Calcule le nombre total de points du cluster
      * 
-     * @return le nombre de points de la liste à construire
+     * @return le nombre de points du cluster
      */
     public int getNb() {
         int N = 0;
@@ -47,10 +47,11 @@ public class Generator1 implements Generator {
     }
 
     /**
-     * Constuit une liste de points en fonction des répartition de listModel et
+     * Constuit un cluster contenant une liste de points en fonction des répartition
+     * de listModel et
      * listNb
      * 
-     * @return Une liste de points d'intérêt
+     * @return Un cluster contenant une liste de points d'intérêt
      */
     public Cluster[] getClusters() {
         Point[] points = new Point[getNb()];

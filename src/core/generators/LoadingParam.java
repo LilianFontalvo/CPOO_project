@@ -8,41 +8,81 @@ import java.util.ArrayList;
 import core.models.*;
 import core.simulation.*;
 
+/**
+ * LoadingParam est une classe statique permettant de générer une simulation à partir de
+ * fichiers de parmatètres.
+ * 
+ * @author Lilian Fontalvo
+ * @version 1.0
+ * 
+ * @see Generator
+ */
+
 public class LoadingParam {
 
+    /**
+     * Nom du fichier indiquant les clusters
+     */
     static private String clustersFile = "src/parameters/clusters.csv";
+    /**
+     * Nom du fichier indiquant les consommateurs
+     */
     static private String consumersFile = "src/parameters/consumers.csv";
+    /**
+     * Nom du fichier indiquant les producteurs
+     */
     static private String producersFile = "src/parameters/producers.csv";
+    /**
+     * Nom du fichier indiquant les lignes
+     */
     static private String linesFile = "src/parameters/lines.csv";
+    /**
+     * Nom du fichier indiquant les chemins entre clusters
+     */
     static private String pathsFile = "src/parameters/paths.csv";
 
+    /**
+     * Permet de renvoyer un modèle à partir des informations de la ligne du fichier consommateurs
+     * 
+     * @param tokens Listes des differents paramètres d'un point (format String)
+     * @return Le modèle correspondant
+     */
     static private Model getModelFromString(String[] tokens) {
         String model = tokens[4].trim();
         switch (model) {
-        case "House":
-            return new House();
-        case "RandHouse":
-            int i = 0;
-            String token = "";
-            for (String string : tokens) {
-                token = string;
-                i++;
-            }
-            if (i == 6)
-                return new RandHouse(Long.parseUnsignedLong(token.trim()));
-            else
-                return new RandHouse();
-        case "Factory":
-            return new Factory();
-        case "SolarPlant":
-            return new SolarPlant();
-        case "NuclearPlant":
-            return new NuclearPlant();
-        default:
-            throw new IllegalArgumentException("The requested model '" + model + "' does not exist.");
+            case "House":
+                return new House();
+            case "RandHouse":
+                int i = 0;
+                String token = "";
+                for (String string : tokens) {
+                    token = string;
+                    i++;
+                }
+                if (i == 6)
+                    return new RandHouse(Long.parseUnsignedLong(token.trim()));
+                else
+                    return new RandHouse();
+            case "Factory":
+                return new Factory();
+            case "SolarPlant":
+                return new SolarPlant();
+            case "NuclearPlant":
+                return new NuclearPlant();
+            default:
+                throw new IllegalArgumentException("The requested model '" + model + "' does not exist.");
         }
     }
 
+    /**
+     * Génère un point complexe à partir des paramètres du fichier consommateurs/producteurs
+     * 
+     * @param bin Copie du fichier concerné
+     * @param tokens Liste des paramètres de la ligne actuellement lue
+     * @param name Nom du Point Complexe généré
+     * @return Le Point Complexe correspondant
+     * @throws IOException
+     */
     static private PointComplexe ComplexPointGenerator(BufferedReader bin, String[] tokens, String name)
             throws IOException {
         ArrayList<Point> pointsAL = new ArrayList<Point>();
@@ -81,8 +121,18 @@ public class LoadingParam {
         return new PointComplexe(name, points);
     }
 
+    /**
+     * Lit les fichiers consommateurs et producteur et ajoute les points qu'ils contiennent dans les listes fournies.
+     * 
+     * @param filename Nom du fichier à lire
+     * @param nbCluster Nombre de clusters dans lesquels il faut répartir les Points
+     * @param namesClusters Nom des clusters dans lesquels il faut répartir les Points
+     * @param listsPoints Liste de Points à remplir
+     * @param isProducer Boolean permettant de différencier les consommateurs des producteurs
+     * @throws IOException
+     */
     static private void readPoint(String filename, int nbCluster, ArrayList<String> namesClusters,
-            ArrayList<ArrayList<Point>> listsPoints, boolean isProducer) throws NumberFormatException, IOException {
+            ArrayList<ArrayList<Point>> listsPoints, boolean isProducer) throws IOException {
         FileReader in = new FileReader(filename);
         BufferedReader bin = new BufferedReader(in);
         bin.readLine();
@@ -125,6 +175,16 @@ public class LoadingParam {
         bin.close();
     }
 
+    /**
+     * Permet de générer les différentes lignes entre les Clusters
+     * 
+     * @param filename Nom du fichier Lignes
+     * @param namesClusters Liste des noms des différents Clusters à relier
+     * @param listLines Liste de Lignes à remplir
+     * @param names Liste des noms des différentes Lignes
+     * @param clusters Liste des Clusters à relier
+     * @throws IOException
+     */
     static private void readLines(String filename, ArrayList<String> namesClusters, ArrayList<Ligne> listLines,
             ArrayList<String> names, ArrayList<Cluster> clusters) throws IOException {
         FileReader in = new FileReader(filename);
@@ -156,6 +216,15 @@ public class LoadingParam {
         binLines.close();
     }
 
+    /**
+     * Permet de générer les chemins entre clusters
+     * 
+     * @param filename Nom du fichier des Chemins
+     * @param listPaths Liste de chemins à remplir
+     * @param listLines Liste des lignes entre clusters
+     * @param clusters Liste des clusters à relier
+     * @throws IOException
+     */
     static void readPath(String filename, ArrayList<Chemin> listPaths, ArrayList<Ligne> listLines,
             ArrayList<Cluster> clusters) throws IOException {
         FileReader in = new FileReader(filename);
@@ -170,7 +239,7 @@ public class LoadingParam {
             String endName = tokens[2].trim();
             int i = 0;
             for (String nameLine : tokens) {
-                if (i >= 3){
+                if (i >= 3) {
                     Ligne ligne1 = null;
                     for (Ligne ligne2 : listLines) {
                         if (nameLine.equals(ligne2.getNom())) {
@@ -200,6 +269,12 @@ public class LoadingParam {
         binPaths.close();
     }
 
+    /**
+     * Génère un liste de clusters pour la simulation
+     * 
+     * @return Une liste de Cluster prête à être utilisé pour une simulation
+     * @throws IOException
+     */
     static public Cluster[] readClusters() throws IOException {
         ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 
@@ -240,28 +315,28 @@ public class LoadingParam {
             points = pointsAL.toArray(points);
             double[] pos = positionsClusters.get(i);
             ArrayList<Point> prodsAL = listsProd.get(i);
-            if (prodsAL.isEmpty()){
+            if (prodsAL.isEmpty()) {
                 clusters.add(new ClusterSansProd(namesClusters.get(i), points, pos[0], pos[1], null));
             } else {
                 int nb = prodsAL.size();
-                if (nb != 1) throw new IllegalArgumentException(
-                    "Wrong number of Producers in the cluster. Expected 1, given " + nb + ".");
-                    clusters.add(new ClusterAvecProd(namesClusters.get(i), points, pos[0], pos[1], prodsAL.get(0)));
+                if (nb != 1)
+                    throw new IllegalArgumentException(
+                            "Wrong number of Producers in the cluster. Expected 1, given " + nb + ".");
+                clusters.add(new ClusterAvecProd(namesClusters.get(i), points, pos[0], pos[1], prodsAL.get(0)));
             }
         }
-        
+
         ArrayList<Ligne> listLines = new ArrayList<Ligne>();
         readLines(linesFile, namesClusters, listLines, namesClusters, clusters);
 
         ArrayList<Chemin> listPaths = new ArrayList<Chemin>();
         readPath(pathsFile, listPaths, listLines, clusters);
 
-
-    Cluster[] clustersA = new Cluster[nbCluster];
+        Cluster[] clustersA = new Cluster[nbCluster];
         for (int i = 0; i < nbCluster; i++) {
             ArrayList<Point> prodsAL = listsProd.get(i);
             Cluster cluster = clusters.get(i);
-            if (prodsAL.isEmpty()){
+            if (prodsAL.isEmpty()) {
                 ClusterSansProd clustersp = (ClusterSansProd) cluster;
                 String name = cluster.getName();
                 for (Chemin path : listPaths) {

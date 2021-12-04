@@ -68,6 +68,4 @@ public class PointComplexe extends Point{
         }
         return prod;
     }
-
-    
 }

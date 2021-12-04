@@ -1,5 +1,7 @@
 package core.simulation;
 
+import java.util.ArrayList;
+
 /**
  * Point est une classe réprésentant un point d'intérêt dans la simulation.
  * Chaque point doit être différent mais peuvent partager un même modèle. Un
@@ -34,5 +36,23 @@ public abstract class Point {
     public boolean isComplexe() {
         return this.complexe;
     }
+
+        
+    public ArrayList <PointSingulier> getAllPoints(){
+        return getPointsBody(this);
+     }
+
+    private ArrayList <PointSingulier> getPointsBody(Point point){
+        ArrayList <PointSingulier> pointsToReturn = new ArrayList<>();
+        if (point.isComplexe()){
+            for (Point p : ((PointComplexe) point).getPoints()){
+                pointsToReturn.addAll(this.getPointsBody(p));
+            }
+        } else {
+            pointsToReturn.add((PointSingulier)point);
+        }
+        return pointsToReturn;
+     }
+
 
 }

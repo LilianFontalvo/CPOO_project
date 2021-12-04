@@ -6,7 +6,8 @@ import core.models.Model;
 import core.simulation.*;
 
 /**
- * Generator0 est une classe permettant de générer une liste contenant un unique
+ * Generator0 est une classe permettant de générer une liste d'un unique cluster
+ * contenant un unique
  * point d'intérêt. Genrator0 implémente l'interface Generator.
  * 
  * @author Lilian Fontalvo
@@ -27,7 +28,8 @@ public class Generator0 implements Generator {
     /**
      * Crée une liste d'un seul élément en fonction du modèle fourni
      * 
-     * @return Une liste contenant un unique point d'intérêt
+     * @return Une liste d'un seul cluster contenant un unique point d'intérêt
+     *         suivant le modèle fourni
      */
     public Cluster[] getClusters() {
         Point[] points = { new PointSingulier(model.toString() + "_0", model) };
