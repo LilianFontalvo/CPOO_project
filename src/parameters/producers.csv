@@ -1,3 +1,3 @@
 Name;Number;Cluster;NbIP;Model;Param#1;Param#2;Param#3;...;
-CentraleSolaire;1;Cluster1;500;;;
-Centrale;500;Cluster1;0;SolarPlant;;
+CentraleEolienne;1;Cluster1;2;;;
+Eolienne;2;Cluster1;0;WindPlant;;

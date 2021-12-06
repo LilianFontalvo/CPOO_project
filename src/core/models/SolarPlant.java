@@ -1,14 +1,21 @@
 package core.models;
 
+import core.weatherModels.CloudCover;
+import core.weatherModels.Sunlight;
+
 /**
  * SolarPlant est une classe modélisant la consommation/production électrique
- * d'une centrale solaire. Le modèle produit 70 000 kW de 7h à 17h et rien en
- * dehors de cette plage horaire. Le modèle ne consomme rien.
- * 
- * @author Lilian Fontalvo
+ * d'une centrale solaire. Le modèle considère une centrale de 28.000 mètres 
+ * carrés.
+ * @author Lilian Fontalvo & q.bertrand
  * @version 1.0
  */
 public class SolarPlant extends Producer {
+
+    /**
+     * Ratio d'énergie produite sur énergie émise par le Soleil
+     */
+    private final static double rendement = 0.2 ; 
 
     public SolarPlant() {
     }
@@ -17,13 +24,14 @@ public class SolarPlant extends Producer {
         return 0;
     }
 
+    /**
+     * @param min/day les paramètres logiques de jour et de minute
+     * @return La production électrique avec 28.000 m² de panneaux solaires sur la minute choisie
+     */
     public double getPowerProdMin(int min, int day) {
-        if (min <= 60 * 7)
-            return 0;
-        if ((60 * 7 < min) && (min <= 60 * 17))
-            return 70000;
-        else
-            return 0;
+        Sunlight solarPlant = new Sunlight (min, day, 28000); // On choisit une centrale de 28.000 m².
+        CloudCover cloud = new CloudCover(min, day);
+        return (rendement * solarPlant.getAveragePowerProductionOfTheMinute()*(1-cloud.getAverageRatioOfCloudCoverOfTheMinute())) ;
     }
 
     /**
@@ -34,5 +42,9 @@ public class SolarPlant extends Producer {
      */
     public String toString() {
         return "solarPlant";
+    }
+
+    public double getRendement () {
+        return rendement ;
     }
 }

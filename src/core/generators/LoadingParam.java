@@ -67,6 +67,8 @@ public class LoadingParam {
                 return new Factory();
             case "SolarPlant":
                 return new SolarPlant();
+            case "WindPlant":
+                return new WindPlant();
             case "NuclearPlant":
                 return new NuclearPlant();
             default:
